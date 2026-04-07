@@ -1,0 +1,898 @@
+\documentclass[frontgrid]{flacards}
+\usepackage{tabularx}
+\usepackage{color}
+
+\geometry{landscape}
+
+\definecolor{light-gray}{gray}{0.75}
+
+\newcommand{\frontcard}[1]{\textcolor{light-gray}{\colorbox{light-gray}{$#1$}}}
+\newcommand{\backcard}[1]{#1} 
+
+\newcommand{\flashcard}[1]{% create new command for cards with blanks
+    \card{% call the original \card command with twice the same argument (#1)
+        \let\blank\frontcard% but let \blank behave like \frontcard the first time
+        #1
+    }{%
+        \let\blank\backcard% and like \backcard the second time
+        #1
+    }%
+}
+
+\begin{document}
+
+\pagesetup{3}{4} 
+
+\card{
+	Convert {\tt 0xF0} to decimal.
+}{
+	240
+}
+
+\card{
+	Convert 18 to binary using 2's complement.
+}{
+	010010
+}
+
+\card{
+	Where do the values that are fed into an operand come from when an
+	instruction is executed using the three address style?
+}{
+	Memory.
+	\vspace{1em}\\
+	The resulting value is also copied to a destination address in memory.
+}
+
+\card{
+	Why are registers faster than memory?
+}{
+	\begin{tabularx}{0.32\textwidth}{l X}
+		- & Implemented using a flip flop or some other very fast volatile
+		storage (rather than smaller, cheaper SRAM).\\
+		- & Situated inside the processor, so there's less distance for the
+		data to travel, which takes less time.\\
+		- & Fewer of them so address decoding takes less time\\
+		- & Data doesn't need to be transferred over a bus.\\
+	\end{tabularx}
+}
+
+\card{
+	How many registers does an ARM 32-bit processor have?
+}{
+	16
+}
+
+\card{
+	What is the {\it one-address} style of instruction?
+}{
+	Where only one memory address may be used in any one instruction. The other
+	operands must be registers.
+}
+
+\card{
+	Describe the {\it load-store} style of instruction.
+}{
+	The only operations on memory are load and store operations. This means each
+	instruction is very fast and very simple, but there are many instructions.
+}
+
+\card{
+	How is code written in ARM Assembly run?
+}{
+	It is first assembled using an assembler into machine code. Then it is
+	loaded into memory and executed sequentially.
+}
+
+\card{
+	What is the instruction to load a value at a memory address into a register?
+}{
+	{\tt LDR <register>, <memory\_address\_alias>}
+}
+
+\card{
+	What is the instruction to store a value in a register to a memory address?
+}{
+	{\tt STR <register>, <memory\_address\_alias>}
+}
+
+\card{
+	What is the instruction to sum two numbers?
+}{
+	{\tt ADD <destination\_reg>, <operand\_1>, <operand\_2>}
+}
+
+\card{
+	Can the {\tt MUL} command use literals? How else can you multiply literals?
+}{
+	No, it can't use literals, but you can load a literal into a register with
+	{\tt MOV} and then multiply the register!
+}
+
+\card{
+	What is the instruction to branch upon a condition?
+}{
+	{\tt B <condition>, <branch\_name>}
+}
+
+\card{
+	What does the program counter do? What register is it?
+}{
+	It is used to store the memory address of the next instruction to be executed.
+	\vspace{1em}\\
+	It's register 15.
+}
+
+\card{
+	When is the {\tt DEFW} command executed. What does it do? What's its syntax?
+}{
+	It is executed before the program runs.
+	\vspace{1em}\\
+	It stores a value at a memory address and assigns the address an alias.
+	\vspace{1em}\\
+	{\tt <alias> DEFW <value\_1>, ... <value\_n>}
+}
+
+\card{
+	What does {\tt DEFB} do?
+}{
+    {\tt DEFB} stores a single byte in memory. If you give it a string, the
+	whole string will be stored (in multiple bytes).
+}
+
+\card{
+	What's the syntax of {\tt DEFS}?
+}{
+	{\tt <alias> DEFS <number\_of\_bytes>, <value\_of\_bytes>}
+}
+
+\card{
+	What does {\tt STRB} do? What is its syntax?
+}{
+	Stores the lowest eight bits of a register into memory.
+	\vspace{1em}\\
+	{\tt STRB <register>, <memory\_alias>}
+}
+
+\card{
+	What does {\tt LDRB} do? What is its syntax?
+}{
+	Loads the lowest eight bits of a specific memory address into a register. 
+	The other bits in the register are set to zero.
+	\vspace{1em}\\
+	{\tt LDRB <register>, <memory\_alias>}
+}
+
+\flashcard{When using Little Endian, the most significant bit is stored in the\blank{smallest address}}
+
+\flashcard{When using Big Endian, the most significant bit is stored in the\blank{largest address}}
+
+\card{How many bits are assigned to a literal in an ARM instruction}{12}
+
+\card{
+	What command should be used to load a literal into a {\it register}
+}{
+	{\tt LDR <register>, =<literal>}
+	\vspace{1em}\\
+	{\small Note, this is a pseudo instruction, that is converted to either
+	{\tt MOV <register> \#<literal>} or it will define a constant and load that
+	in from	memory.}
+}
+
+\card{
+	How do you load an address into a register so you can use it as a pointer?
+}{
+	{\tt ADR <register>, <alias>}\\
+	Now the {\tt <register>} will hold the memory location (and is therefore a
+	pointer to) the alias.
+}
+
+\card{
+	What does {\tt DEFW <number>} do?
+}{
+	It reserves a word of memory initialised to {\tt <number>}
+}
+
+\card{
+	What does {\tt DEFB <value>} do?
+}{
+	It reserves a byte(s) of memory with the value {\tt <value>}. If a string is
+	passed as the value, multiple bytes will be reserved, each with the value of
+	a character.
+}
+
+\card{
+	What does {\tt DEFS <size>, <fill>} do?
+}{
+    It reserves a block of memory {\tt <size>} bytes long initialised to the
+	value {\tt <fill>}.
+}
+
+\card{
+	What does {\tt ALIGN} do?
+}{
+	Leaves blank bytes in memory so that the next {\tt DEFINE} command will 
+	start on a word boundary.
+}
+
+\card{
+	What does {\tt ENTRY} do?
+}{
+	Sets the PC at the start of the program (i.e. dictates where the program
+	should) start from.
+}
+
+\card{
+	What does {\tt EQU} do?
+}{
+	{\tt EQU} allows us to name a literal. You can then refer to the literal 
+	(still with a hash before it) by name in your code which is easy to read.
+	\vspace{1em}\\
+	{\tt <alias> EQU \#<value>}
+}
+
+\card{
+	What are the four status flags provided by the ARM architecture?
+}{
+	\begin{tabularx}{0.5\textwidth}{l X}
+		- & Negative\\
+		- & Zero\\
+		- & Carry\\
+		- & Overflow\\
+	\end{tabularx}
+}
+
+\card{
+	How can you combine a CMP instruction with another instruction?
+}{
+	Append {\tt S} to an instruction. E.g.:\\
+	{\tt SUBS R0, R1, R2}\\
+	If the result in {\tt R0} was negative, then the negative flag would be set
+	etc etc.
+}
+
+\card{
+	What does {\tt RSB} do?
+}{
+	Reverse subtract. {\tt RSB R1, R0, \#0}:\\
+	{\tt R1 = 0 - R0 = -R0}
+}
+
+\card{
+	What does {\tt MLA} do?
+}{
+	Multiply and add. {\tt MLA R0, R1, R2, R3}:\\
+	{\tt R0 = (R1 * R2) + R3}
+}
+
+% Look at my decoy \phantoms mwahaha!
+
+\flashcard{
+	\begin{tabularx}{0.32\textwidth}{l X}
+		Condition code & Meaning (for cmp or subs)\\ \hline
+		eq & \blank{Equal \phantom{1234567891011121314}}\\
+		ne & \blank{Not equal \phantom{123456789101112}}\\
+		ge & \blank{Signed greater than or equal}\\
+		le & \blank{Signed less than or equal \phantom{12}}\\
+		lt & \blank{Signed less than \phantom{123456}}\\
+		gt & \blank{Signed greater than \phantom{1234}}\\
+	\end{tabularx}
+}
+
+% -------------------
+% Methods of addressing
+% -------------------
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1}?
+	\\\vspace{2em}
+	{\tt LDR R0, [R1]}
+}{
+	This is called {\bf register-indirect addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1}.
+	\\\vspace{2em}
+	{\tt R1} won't be altered at all.
+}
+
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1}?
+	\\\vspace{2em}
+	{\tt LDR	R0, [R1, \#4]}
+}{
+	This is called {\bf pre-indexed addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1 + 4}.
+	\\\vspace{2em}
+	{\tt R1} won't be altered at all.
+}
+
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1}?
+	\\\vspace{2em}
+	{\tt LDR	R0, [R1, \#4]!}
+}{
+	This is called {\bf pre-indexed autoindexed addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1 + 4}.
+	\\\vspace{2em}
+	{\tt R1} will be incremented by {\tt 4} {\it before} the load operation.
+}
+
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1}?
+	\\\vspace{2em}
+	{\tt LDR	R0, [R1], \#4}
+}{
+	This is called {\bf post-indexed autoindexed addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1 + 4}.
+	\\\vspace{2em}
+	{\tt R1} will be incremented by {\tt 4} {\it after} the load operation.
+}
+
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1} and {\tt R2}?
+	\\\vspace{2em}
+	{\tt LDR	R0, [R1, R2]}
+}{
+	This is called {\bf register-indexed addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1 + R2}.
+	\\\vspace{2em}
+	{\tt R1} and {\tt R2} will stay the same.
+}
+
+\card{
+	In the following instruction, what method of addressing is used, what will
+	{\tt R0} contain and what will happen to {\tt R1} and {\tt R2}?
+	\\\vspace{2em}
+	{\tt LDR	R0, [R1, R2, LSL, \#2]}
+}{
+	This is called {\bf scaled register-indexed addressing}.
+	\\\vspace{2em}
+        The value loaded into {\tt R0} will be the 32 bits stored at the memory
+	address that is equal to the value in {\tt R1 + (R2 * 4)}.
+	\\\vspace{2em}
+	{\tt R1} and {\tt R2} will stay the same.
+}
+
+% ---------------
+% Strings
+% ---------------
+
+\card{
+	How do you load a {\tt String} into a register?
+}{
+	\begin{tabularx}{0.5\textwidth}{X}
+		{\tt msg DEFB "Hello"}\\
+		{\tt ALIGN}\\
+		{\tt ADRL R0, msg}\\
+		{\tt SVC 3}
+	\end{tabularx}
+}
+
+\card{
+	What does the {\tt ADR} command do?
+}{
+	A psudo instruction that loads a program relative address into a register.
+	Unlike {\tt ADRL} it only compiles to one instruction (so it's faster), but
+	it has a smaller range of addressable addresses.
+}
+
+\card{
+	What does the {\tt ADRL} instruction do?	
+}{
+	It is a psudo instruction that loads a program relative address into the
+	register. It is compiled into two {\tt ADD} instructions.
+}
+
+\card{
+	How do you find the length of a string defined by the alias {\tt message}?
+}{
+	\begin{tabularx}{0.5\textwidth}{X}
+		{\tt 	ADRL R1, message}\\
+		{\tt 	MOV R2, \#0}\\
+		{\tt count LDRB R0, [R1, R2]}\\
+		{\tt 	CMP R0, \#0}\\
+		{\tt 	ADDNE R2, R2, \#1}\\
+		{\tt 	BNE count}\\
+		{\tt 	STR R2, length}
+	\end{tabularx}
+}
+
+\card{
+	What are the four ARM bit shifting/rotation instructions?
+}{
+	\begin{tabularx}{0.4\textwidth}{l X}
+		{\bf Mnemonic} & {\bf Meaning} \\
+
+		{\tt LSL} & Logical shift left \\
+
+		{\tt LSR} & Logical shift right \\
+
+		{\tt ASR} & Arithmetic shift right\\
+
+		{\tt ROR} & Rotate Right
+	\end{tabularx}
+}
+
+\card{
+	What is the syntax of a shifting or rotation operation in ARM?
+}{
+	{\tt INSTRUCTION destination, operand, (\#)shift}
+}
+
+\card{
+	How can {\tt LSL} be used to load words from a table/array in memory?
+}{
+	{\tt LDR R0, [R1, R2, LSL \#2]}
+}
+
+% --------
+% Stacks
+% --------
+
+\card{
+	What is the command to push something to the stack?
+}{
+	{\tt PUSH <register/literal>}
+}
+
+\card{
+	What is the command to pop something off the stack?
+}{
+	{\tt POP <register/literal>}
+}
+
+\card{
+	What is a different way of accessing the top value of the stack rather than
+	using {\tt POP}?
+}{
+	{\tt LDR R1, [SP], \#4}
+}
+
+\card{
+	What is a different way of adding a new element to the stack rather than
+	using the {\tt PUSH} command?
+}{
+	{\tt STR R1, [SP, \#-4]!}
+}
+
+\card{
+	How do you push or pop multiple elements from the stack without using the
+	{\tt PUSH} or {\tt POP} commands?
+}{
+	{\tt STMFD SP!, {R0, R1}}\\
+	{\tt LDMFD SP!, {R0, R1}}
+}
+
+%------------
+% Methods
+%------------
+
+\card{
+	What does the {\tt BL} command do?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+		- Moves the current value of the program counter (PC) into the link
+		register (LR).\\
+		- Branch to the label defined in the instruction by moving the memory
+		address of that instruction into the PC.
+	\end{tabularx}
+}
+
+\card{
+	After a method called using the {\tt BL} command has finished executing, 
+	what command does it use to tell the processor go back to what it was doing?
+}{
+	{\tt MOV PC, LR}
+}
+
+\card{
+	If a method is using registers as temporary stores, what should it do before
+	and after it executes? What instructions should it use to do this?
+}{
+	It should {\tt PUSH} the value of the registers to the stack and then
+	{\tt POP} them again after:
+	\begin{tabularx}{0.32\textwidth}{X}
+		{\tt methodname}\\
+		{\tt PUSH \{registers\_used\}}\\
+		{\tt ; Do stuff}\\
+		{\tt POP \{registers\_used\}}\\
+		{\tt MOV PC, LR}
+	\end{tabularx}
+}
+
+\card{
+	How do you pass a parameter to a method?
+}{
+	Either put it in a register (this is the stupid way), or put it on the stack
+	(this is a good way since you can pass lots of parameters like this.)
+}
+
+\card{
+	How should a method access stacked parameters?
+}{
+	Just read the stack using the {\tt LDR} command and add an offset depending
+	on what parameter you want. E.g:\\
+	{\tt LDR R0, [SP, \#12]}
+}
+
+\card{
+	What is a stack frame?
+}{
+	A stack frame is a set of values on the stack that relate to a single
+	method. They may contain saved registers, temporary values used by the
+	method, a pointer to the parent method etc.
+}
+
+%---------
+% Switch statements
+%---------
+
+\card{
+	How do you convert a Java switch statement into ARM Assembly?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+	1. Create a table with the values triggered by the case statement as the
+	index of the table.\\
+	2. Load the address of the table into a register ({\tt ADR R1, table})\\
+	3. Get the value of the case variable in a register (we'll use {\tt R0}).\\
+	3. Use the {\tt LDR} command to load the correct method to call
+	({\tt LDR PC, [R1, R0, LSL, \#2]})\\
+	4. Make sure you've got a default case\\
+	5. Make sure you branch to the end of the case statement after each method.
+	\end{tabularx}
+}
+
+\card{
+	What are the ARM comparison operators for unsigned integers?
+}{
+	\begin{tabular}{l l}
+		{\tt HI} & Higher \\
+		{\tt HS} & Higher or same\\
+		{\tt LO} & Lower\\
+		{\tt LS} & Lower or same\\
+	\end{tabular}
+}
+
+\card{
+	How is a boolean represented in ARM assembly?
+}{
+	As an 8-bit set of values that is either {\tt 00000000} or {\tt 00000001}.
+}
+
+\card{
+	How do you test if an ARM boolean is true or false?
+}{
+	{\tt CMP R1, \#0}\\
+	If it's equal, then it's false.
+}
+
+\card{
+	What are the logical operators that ARM has?
+}{
+	\begin{tabular}{l l}
+		Logical AND & {\tt AND}\\
+		Logical OR & {\tt ORR}\\
+		Logical XOR & {\tt EOR}\\
+		Bit clear & {\tt BIC}\\
+		Logical NOT & {\tt MVN}
+	\end{tabular}
+}
+
+\card{
+	What is the syntax of an ARM logical operation such as {\tt EOR}?
+}{
+	{\tt EOR <reg\_1>, <reg\_2>}\\
+	The result goes in {\tt <reg\_1>}.
+}
+
+\flashcard{
+	Fill in the truth table:\\
+	\begin{tabular}{|l l|c|}
+		\hline
+		{\tt A} & {\tt B} & {\tt BIC A, B}\\ \hline
+		0 & 0 & \blank{0}\\
+		0 & 1 & \blank{0}\\
+		1 & 0 & \blank{1}\\
+		1 & 1 & \blank{0}\\ \hline
+	\end{tabular}
+}
+
+\card{
+	What are the two methods of interfacing with peripherals?
+}{
+	\begin{tabular}{l}
+	- Polling\\
+	- Interrupts
+	\end{tabular}
+}
+
+\card{
+	When the CPU is polling a peripheral, what does the poll actually do?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+	- Read the status register\\
+	- Use the {\tt TST} command to check the value of the status register
+	against a bit pattern\\
+	- If the test passes, then run a method to handle what to do next.
+	\end{tabularx}
+}
+
+\card{
+	Define 'memory mapped register'
+}{
+	A memory location that appears to be an actual memory location, but is
+	actually situated inside a peripheral (so it is mapped to a different
+	address).
+}
+
+\card{
+	What does {\tt TST} do?
+}{
+	It performs a bitwise {\tt AND} on its operands and then compares it to
+	zero, setting the comparison flags as it does so.
+}
+
+\card{
+	What is the syntax for the {\tt TST} instruction?
+}{
+	{\tt TST <register>, <pattern>}
+}
+
+\card{
+	What happens when an interrupt occurs?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+		1. Stop the program execution (like a {\tt BL})\\
+		2. Save important registers by stacking them (including the CSPR)\\
+		3. Run the interrupt handler\\
+		4. Restore the saved registers from the stack\\
+		5. Copy the LR into the PC (and add 4) so the next instruction is
+		executed.
+	\end{tabularx}\\
+	{\tiny Remember you can use {\tt STMFD} and {\tt LDMFD} to efficiently
+	manage the stack}
+}
+
+\card{
+	Write some sample code for checking a status register against a pattern.
+}{
+	\begin{tabular}{l}
+		{\tt ADR R1, status\_reg}\\
+		{\tt LDR R0, [R1]}\\
+		{\tt TST R0, 0x40}\\
+		{\tt BNE correct}\\
+		{\tt B incorrect}
+	\end{tabular}
+}
+
+\card{
+	What is an interrupt vector table?
+}{
+	A table of pointers to various methods for handling different peripherals.
+	It's implemented in the same way as a case statement is.
+}
+
+\card{
+	What does {\tt SVC} stand for?
+}{
+	SuperVisor Call.
+}
+
+\card{
+	What are the five SVC commands for? Where does it store or get its data
+	from?
+}{
+	\begin{tabular}{l l}
+	0 & Output a character\\
+	1 & Input a character\\
+	2 & Stop execution\\
+	3 & Output a string\\
+	4 & Output an integer
+	\end{tabular}\\
+	{\tt R0}
+}
+
+\card{
+	How do we get the parameter from {\tt SVC X}?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+		- Load the {\tt SVC X} instruction into a register with 
+		{\tt LDR R0, [LR, \#-4]}\\
+		- Clear the top 8 bits ({\tt BIC R0, R0, 0xFF000000})\\
+		- Logic shift right by 8 places to get the parameter
+		({\tt LSR R1, R0, \#8}).	
+	\end{tabularx}
+}
+
+\card{
+	What is direct memory access?
+}{
+	A hardware chip on the motherboard that allows peripherals to write directly
+	to memory rather than going through the CPU first.
+}
+
+\card{
+	List advantages and disadvantages of DMA.
+}{
+	\begin{tabularx}{0.32\textwidth}{r@{\hskip 0in}X r@{\hskip 0in}X}
+	& {\bf Advantages} & & {\bf Disadvantages}\\
+	\hline
+	$\cdot$ & The load on the CPU is lessened. & $\cdot$ & The load on the
+	memory and the peripheral is the same as before.\\
+	& & $\cdot$ & The motherboard will be more complicated with the extra
+	hardware.
+	\end{tabularx}
+}
+
+%-----------
+% Operating systems
+%-----------
+
+\card{
+	What does the kernel do?
+}{
+	It abstracts the implementation of the hardware from the running programs.
+	It also protects programs from each other by letting them only access memory
+	locations that have been assigned to them.
+}
+
+\card{
+	What is a kernel mode?
+}{
+	A kernel mode conveys privileges to a program. The default (user) mode only
+	allows memory locations within the allocated space to be accessed. Other
+	modes convey different privileges, e.g. the privileged mode which allows any
+	address to be accessed.
+}
+
+%----------
+% Methods of running code
+%----------
+
+\card{
+	What are the five steps of compilation?
+}{
+	\begin{tabular}{l}
+	1. Lexical analysis\\
+	2. Syntaxic analysis\\
+	3. Semantic analysis\\
+	4. Code generation\\
+	5. Optimisation
+	\end{tabular}
+}
+
+\card{
+	What are the pros and cons of an interpreted language?
+}{
+	\begin{tabularx}{0.32\textwidth}{r@{\hskip 0in}X r@{\hskip 0in}X}
+	& {\bf Advantages} & & {\bf Disadvantages}\\
+	\hline
+	$\cdot$ & Simple to implement & $\cdot$ & Slow.\\
+	$\cdot$ & Portable code & $\cdot$ & Hard to simulate a real computer on
+	them.\\
+	$\cdot$ & Increased security (since applications can be sandboxed). & &\\
+	$\cdot$ & Ease of debugging since the state is within the interpreter & &\\
+	\end{tabularx}
+}
+
+\card{
+	Why does Java use zero address and one address instructions?
+}{
+	So that the bytecode is very small in size and can be quickly transferred
+	over the Internet.
+}
+
+\flashcard{
+	Code that is written using zero or one address instructions is called a
+	\blank{stack machine}.
+}
+
+\card{
+	What would a zero address {\tt ADD} instruction do?
+}{
+	\begin{tabular}{l}
+	- Pop the two top values off the stack.\\
+	- Add them together.\\
+	- Push the result onto the stack again.
+	\end{tabular}
+}
+
+\card{
+	How would $x = (a + b) * c$ by represented in a stack machine?
+}{
+	\begin{tabular}{l}
+	{\tt PUSH a}\\
+	{\tt PUSH b}\\
+	{\tt ADD}\\
+	{\tt PUSH c}\\
+	{\tt MUL}\\
+	{\tt POP x}\\
+	\end{tabular}
+}
+
+\card{
+	What does Dynamic Class Loading do?
+}{
+	Only loads java classes just before they are executed to minimise memory
+	useage and improve loading times of programs.
+}
+
+\card{
+	What does the JIT compiler do?
+}{
+	It compiles classes into machine code in real time as they are loaded. It
+	uses {\bf dynamic compilation} to refine its compilation so that code that
+	is run multiple times is optimised more than code that is run only once.
+}
+
+\card{
+	What are the three areas of memory usage in Java programs?
+}{
+	The class area (containing method code and class variables), stack area
+	(containing the stack, which includes method parameters, local variables and
+	return pointers) and heap area (containing the objects used by the program).
+}
+
+\card{
+	Where do Java objects reside in memory?
+}{
+	The heap.
+}
+
+\card{
+	Where does the heap pointer point to?
+}{
+	The next free memory location in the heap.
+}
+
+\card{
+	What are the three parts that each item in the heap is composed of?
+}{
+	A header (containing information about the object such as its size),
+	storage for instance variables and a table of methods that the object
+	contains.
+}
+
+\card{
+	What is a stale object?
+}{
+	An object in the heap that is no longer referenced by any pointer.
+}
+
+\card{
+	What are the stages of garbage collection?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+	- Stop the program execution\\
+	- Walk through the heap and mark objects as live or unreferenced.\\
+	- Delete unreferenced objects in the heap.\\
+	- Compact the heap by moving the live objects together (remembering to
+	update the pointers to the moved objects).\\
+	\end{tabularx}
+}
+
+\card{
+	How do you do array access in ARM?
+}{
+	\begin{tabularx}{0.32\textwidth}{X}
+	{\tt LDR R0, index}\\
+	{\tt LDR R1, basePointer}\\
+	{\tt LDR R2, [R1, R0, LSL \#2]}\\
+	{\tt STR R2, element}
+	\end{tabularx}
+}
+
+\end{document}

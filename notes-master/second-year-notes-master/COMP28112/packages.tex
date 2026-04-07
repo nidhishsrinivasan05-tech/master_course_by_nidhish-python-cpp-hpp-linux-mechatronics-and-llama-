@@ -1,0 +1,47 @@
+% Tell me about my LaTeX bad practices
+\usepackage[l2tabu, orthodox]{nag}
+% For \hypersetup
+\usepackage{hyperref}
+% For line brakes in tables
+\usepackage{tabularx}
+% For the split environment
+\usepackage{amsmath}
+% For scientific units
+\usepackage{siunitx}
+% For tabs in verbatim
+\usepackage{moreverb}
+% For fancy verbatim (use this one in mymulticol)
+\usepackage{alltt}
+% For wrapping figures in text
+\usepackage{wrapfig}
+% For graphics
+\usepackage{graphicx}
+% For code listings
+\usepackage{listings}
+% For splitting long lists into columns
+\usepackage{multicol}
+% For no multicol on the kindle
+\usepackage{environ}
+\newif\ifmulticols
+\NewEnviron{mymulticols}{
+\ifmulticols
+  \begin{multicols}{2}
+    \BODY
+  \end{multicols}
+\else
+  \BODY
+\fi}
+% Means you don't have to put \\ to start a new line.
+\usepackage[parfill]{parskip}
+% Make LaTeX pretty with better kerning etc
+\usepackage{microtype}
+
+% For quotes
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip2em
+  \hbox{}\nobreak\hfil(#1)%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}}
+  {\signed{\usebox\mybox}\end{quote}}

@@ -1,0 +1,66 @@
+% Tell me about my LaTeX bad practices
+\usepackage[l2tabu, orthodox]{nag}
+% For \hypersetup
+\usepackage{hyperref}
+% For line brakes in tables
+\usepackage{tabularx}
+% For the split environment
+\usepackage{amsmath}
+% For tabs in verbatim
+\usepackage{moreverb}
+% For fancy verbatim (use this one in mymulticol)
+\usepackage{alltt}
+% For splitting long lists into columns
+\usepackage{multicol}
+% For diagrams
+\usepackage{tikz}
+\usepackage{pgfplots}
+% That's what it says to add
+\pgfplotsset{compat=1.9}
+% For colours and listings
+\usepackage{color}
+\usepackage{listings}
+% Since I apparently use too many floats for LaTeX
+\usepackage{morefloats}
+% For wrapped figures
+\usepackage{wrapfig}
+% For SI units
+\usepackage[binary-units=true,per-mode=symbol]{siunitx}
+\DeclareSIUnit\sample{sample}
+% For nice code
+\usepackage{minted}
+\newminted{java}{linenos, numbersep=5pt, frame=lines, gobble=2}
+% For no multicol on the kindle
+\usepackage{environ}
+\newif\ifmulticols
+\NewEnviron{mymulticols}{
+\ifmulticols
+  \begin{multicols}{2}
+    \BODY
+  \end{multicols}
+\else
+  \BODY
+\fi}
+% Means you don't have to put \\ to start a new line.
+\usepackage[parfill]{parskip}
+% Make LaTeX pretty with better kerning etc
+\usepackage{microtype}
+
+% If enabled, maybe skip certain stuff or do it for less time to compile faster
+\ifdefined\fastCompile
+  \newcommand{\samplesScaleFactor}{0.1}
+\else
+  \newcommand{\samplesScaleFactor}{1.0}
+\fi
+
+\definecolor{customblue}{RGB}{235,241,245}
+
+\lstdefinestyle{Java}{%
+  backgroundcolor=\color{customblue},
+  frame=single,
+  framerule=0pt,
+  basicstyle=\ttfamily,
+  breaklines=true,
+  columns=fullflexible,
+  language=Java
+}
